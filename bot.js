@@ -18,9 +18,6 @@ const client = new Client({
     ],
 });
 
-let lastOnline = null;
-let lastUptimeString = null;
-
 client.once("clientReady", async () => {
     console.log(`Bot is ready! Logged in as ${client.user.tag}`);
     bot_FOnline();
@@ -67,9 +64,6 @@ function bot_FOnline() {
                         type: ActivityType.Custom
                     });
                 }
-
-                lastOnline = online;
-                lastUptimeString = uptimeString;
             } else {
                 console.warn("Received less than 8 bytes from server, cannot parse online and uptime.");
                 if (client?.user) {
@@ -96,18 +90,10 @@ function bot_FOnline() {
         connection.on('timeout', () => {
             console.warn("Connection timed out.");
             if (client?.user) {
-                if (lastOnline !== null && lastUptimeString !== null) {
-                    const playerText = lastOnline === 1 ? 'player' : 'players';
-                    client.user.setActivity({
-                        name: `⚡ ${lastOnline} ${playerText} 🕒 ${lastUptimeString}`,
-                        type: ActivityType.Custom
-                    });
-                } else {
-                    client.user.setActivity({
-                        name: "⚠️ Connection error!",
-                        type: ActivityType.Custom
-                    });
-                }
+                client.user.setActivity({
+                    name: "⚠️ Connection error!",
+                    type: ActivityType.Custom
+                });
             }
             connection.destroy();
         });
